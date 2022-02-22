@@ -53,17 +53,14 @@ def home_detail_view():
 async def img_echo_view(file:UploadFile = File(...), settings:Settings = Depends(get_settings)):
     if not settings.echo_active:
         raise HTTPException(detail="Invalid endpoint", status_code=400)
-    UPLOAD_DIR.mkdir(exist_ok=True) # create directory if needed
-    bytes_str = io.BytesIO(await file.read()) # read image data
-    # try:
-    #     img = Image.open(bytes_str)
-    # except:
-    #     raise HTTPException(detail="Invalid image", status_code=400)
+    UPLOAD_DIR.mkdir(exist_ok=True)
+    bytes_str = io.BytesIO(await file.read())
+    try:
+        img = Image.open(bytes_str)
+    except:
+        raise HTTPException(detail="Invalid image", status_code=400)
     fname = pathlib.Path(file.filename)
     fext = fname.suffix # .jpg, .txt
-    dest = UPLOAD_DIR / f"{uuid.uuid1()}{fext}" # use string substitution
-
-    with open(str(dest), 'wb') as out:
-        out.write(bytes_str.read())
-    # img.save(dest)
+    dest = UPLOAD_DIR / f"{uuid.uuid1()}{fext}"
+    img.save(dest)
     return dest
