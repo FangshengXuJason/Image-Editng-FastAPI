@@ -1,9 +1,17 @@
 import pathlib
 import os
 import io
+
+from functools import lru_cache
+
 from fastapi import(
     FastAPI,
-    Request
+    # Header,
+    # HTTPException,
+    Depends,
+    Request,
+    # File,
+    # UploadFile
     )
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
@@ -19,17 +27,20 @@ class Settings(BaseSettings):
     class Config:
         env_file = ".env"
 
+@lru_cache
+def get_settings():
+    return Settings()
+
+settings = get_settings()
+DEBUG=settings.debug
 
 BASE_DIR = pathlib.Path(__file__).parent
 # UPLOAD_DIR = BASE_DIR / "uploads"
 
-print(BASE_DIR / "templates")
 
 app = FastAPI()
 templates = Jinja2Templates(directory=str(BASE_DIR / "templates"))
 
 @app.get("/", response_class=HTMLResponse) # http GET -> JSON
-def home_view(request: Request):
-    print(request)
-    # can use string substitution
+def home_view(request: Request, settings:Settings = Depends(get_settings)):
     return templates.TemplateResponse("home.html", {"request": request, "abc": 123})

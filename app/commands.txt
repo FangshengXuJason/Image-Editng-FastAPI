@@ -30,5 +30,6 @@ pre-commit install
 pre-commit run --all-files
 
 # makes sure that little things are handled during pre-commit?
+# this is a way to commit
 git add --all
 git commit -m "7 - FastAPI Git& pre-commit"
