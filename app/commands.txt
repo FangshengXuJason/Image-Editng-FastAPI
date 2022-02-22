@@ -14,6 +14,11 @@ pytest
 http://127.0.0.1:8000/
 
 # Git Commands
+# check remote address?
+git remote -v
+
+# push ...
+git push origin master
 
 # get a sample-config for pre-commit
 pre-commit sample-config
