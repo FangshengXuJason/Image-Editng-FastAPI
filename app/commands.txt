@@ -37,3 +37,6 @@ pre-commit run --all-files
 # this is a way to commit
 git add --all
 git commit -m "a commit message"
+
+# push commit
+git push origin master
