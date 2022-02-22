@@ -1,0 +1,8 @@
+# install some dependency
+pip install -r requirements.txt
+
+# check dependency for this project
+pip freeze
+
+# run 
+uvicorn app.main:app --reload
