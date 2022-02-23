@@ -38,7 +38,6 @@ DEBUG=settings.debug
 BASE_DIR = pathlib.Path(__file__).parent
 UPLOAD_DIR = BASE_DIR / "uploads"
 
-
 app = FastAPI()
 templates = Jinja2Templates(directory=str(BASE_DIR / "templates"))
 
@@ -48,23 +47,24 @@ def home_view(request: Request, settings:Settings = Depends(get_settings)):
     return templates.TemplateResponse("home.html", {"request": request, "author": "FangshengXu"})
 
 
-def verify_auth(authorization = Header(None), settings:Settings = Depends(get_settings)):
-    """
-    Authorization: Bearer <token>
-    {"authorization": "Bearer <token>"}
-    """
-    if settings.debug and settings.skip_auth:
-        return
-    if authorization is None:
-        raise HTTPException(detail="Invalid endpoint", status_code=401)
-    label, token = authorization.split()
-    if token != settings.app_auth_token:
-        raise HTTPException(detail="Invalid endpoint", status_code=401)
+# def verify_auth(authorization = Header(None), settings:Settings = Depends(get_settings)):
+#     """
+#     Authorization: Bearer <token>
+#     {"authorization": "Bearer <token>"}
+#     """
+#     if settings.debug and settings.skip_auth:
+#         return
+#     if authorization is None:
+#         raise HTTPException(detail="Invalid endpoint", status_code=401)
+#     label, token = authorization.split()
+#     if token != settings.app_auth_token:
+#         raise HTTPException(detail="Invalid endpoint", status_code=401)
 
 
-@app.post("/") # http POST
-async def prediction_view(file:UploadFile = File(...), authorization = Header(None), settings:Settings = Depends(get_settings)):
-    verify_auth(authorization, settings)
+@app.post("/") # http POST -> JSON(OCR result)
+async def prediction_view(file:UploadFile = File(...), settings:Settings = Depends(get_settings)):
+# async def prediction_view(file:UploadFile = File(...), authorization = Header(None), settings:Settings = Depends(get_settings)):
+    # verify_auth(authorization, settings)
     bytes_str = io.BytesIO(await file.read())
     try:
         img = Image.open(bytes_str)
@@ -73,6 +73,27 @@ async def prediction_view(file:UploadFile = File(...), authorization = Header(No
     preds = pytesseract.image_to_string(img)
     predictions = [x for x in preds.split("\n")]
     return {"results": predictions, "original": preds}
+
+
+@app.post("/flip", response_class=FileResponse) # flip the image horizontally
+async def flip_view(file:UploadFile = File(...), settings:Settings = Depends(get_settings)):
+# async def flip_view(file:UploadFile = File(...), authorization = Header(None), settings:Settings = Depends(get_settings)):
+    # verify_auth(authorization, settings)
+    bytes_str = io.BytesIO(await file.read())
+    try:
+        img = Image.open(bytes_str)
+    except:
+        raise HTTPException(detail="Invalid image", status_code=400)
+    
+    new_img = img.transpose(Image.FLIP_LEFT_RIGHT)
+    fname = pathlib.Path(file.filename)
+    fext = fname.suffix # .jpg, .txt
+    dest = UPLOAD_DIR / f"{uuid.uuid1()}{fext}"
+    new_img.save(dest)
+    return dest 
+
+
+# TODO: add a method that construct a response, returning a after-effect image
 
 
 @app.post("/img-echo/", response_class=FileResponse) # http POST
