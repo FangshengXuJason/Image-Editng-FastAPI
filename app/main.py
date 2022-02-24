@@ -108,3 +108,22 @@ async def edit_multiple_images(operations: List[ImgEditParam]):
     for operation in operations: 
         print(operation.name)
     return operations
+
+# Using a dictionary to select function to execute
+def function1(): 
+    return 0
+
+def function2(): 
+    return 2
+
+def function3(): 
+    return 3   
+
+myDict = {
+    "P1": (lambda x: function1()),
+    "P2": (lambda x: function2()),
+    "Pn": (lambda x: function3())}
+myItems = ["P1", "P2","Pn"]
+
+for item in myItems:
+    myDict[item](1)
