@@ -1,6 +1,8 @@
 # reference rotate()
 # https://pythontic.com/image-processing/pillow/rotate
 
+# param: degree: int(turn the image by this many degrees)
+
 # Rotate +/- n degrees
 import pathlib
 from PIL import Image

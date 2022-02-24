@@ -1,6 +1,8 @@
 # reference
 # https://pythontic.com/image-processing/pillow/introduction
 
+# param: up_down: bool (choose the direction)
+
 # Flip horizontal and vertical
 import pathlib 
 from pathlib import Path
@@ -14,7 +16,5 @@ img =  Image.open(img_path)
 
 # Do a flip of left and right
 flippedImage = img.transpose(Image.FLIP_LEFT_RIGHT)
-
-# img.show() # Show the original image
-
 flippedImage.show() # Show the flipped image
+
