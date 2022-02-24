@@ -1,4 +1,6 @@
 app/uploads
+app/downloads
+app/temps
 app/commands.txt
 .DS_Store
 bin/
