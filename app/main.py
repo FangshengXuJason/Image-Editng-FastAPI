@@ -159,7 +159,7 @@ async def upload_image(file:UploadFile = File(...)):
     return dest
 
 
-@app.get("/api/v1/downlaod/{file_path: path}", response_class=FileResponse)
+@app.post("/api/v1/downlaod/{file_path: path}", response_class=FileResponse)
 async def download_image(file_path: str):
     # verify file_path
     file_name = pathlib.Path(file_path)
@@ -168,7 +168,7 @@ async def download_image(file_path: str):
     return file_path
 
 
-@app.put("/api/v1/flip/{file_path: path}") 
+@app.post("/api/v1/flip/{file_path: path}") 
 async def flip_api(file_path: str, top_bottem: bool = True):
     try:
         img = Image.open(file_path)
@@ -181,7 +181,7 @@ async def flip_api(file_path: str, top_bottem: bool = True):
     return {"operation": "flipped left and right"}
 
 
-@app.put("/api/v1/greyscale/{file_path: path}") 
+@app.post("/api/v1/greyscale/{file_path: path}") 
 async def greyscale_api(file_path: str):
     try:
         img = Image.open(file_path)
@@ -192,7 +192,7 @@ async def greyscale_api(file_path: str):
     return {"operation": "greyscale"}
 
 
-@app.put("/api/v1/resize/{file_path: path}")
+@app.post("/api/v1/resize/{file_path: path}")
 async def resize_api(file_path: str, width: int = 128, height: int = 128):
     try:
         img = Image.open(file_path)
@@ -204,7 +204,7 @@ async def resize_api(file_path: str, width: int = 128, height: int = 128):
     return {"operation": "resized to " + str(width) + " x " + str(height)}
 
 
-@app.put("/api/v1/rotate/{file_path: path}")
+@app.post("/api/v1/rotate/{file_path: path}")
 async def rotate_api(file_path: str, degrees: int = 90):
     try:
         img = Image.open(file_path)
